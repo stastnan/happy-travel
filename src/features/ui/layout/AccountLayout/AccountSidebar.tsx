@@ -50,7 +50,10 @@ export default function AccountSidebar({ isMinimized, onClose }: Props) {
     <Stack justifyContent="space-between" sx={{ px: 2, py: 3, height: "100%" }}>
       <Box>
         <Box mb={6}>
-          <Logo isMinimized={isMinimized} />
+          <Logo
+            isMinimized={isMinimized}
+            sx={{ alignItems: "center", justifyContent: "center" }}
+          />
         </Box>
         <Stack
           direction="row"

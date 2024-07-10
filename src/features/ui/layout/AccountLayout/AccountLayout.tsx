@@ -168,6 +168,9 @@ export default function AccountLayout() {
             md: 4,
           },
           pb: 4,
+          bgcolor: "grey.100",
+          minHeight: "100vh",
+          height: "auto",
         }}
       >
         <Toolbar sx={{ display: { md: "none" }, ...TOOLBAR_STYLES }} />

@@ -117,6 +117,17 @@ theme.typography.h2 = {
   },
 };
 
+theme.typography.h3 = {
+  fontFamily: FontFamilies.poppins,
+  fontWeight: FontWeights.medium,
+  fontSize: "1.187rem",
+  lineHeight: "3.125rem",
+  [theme.breakpoints.down("md")]: {
+    fontSize: "1.375rem",
+    lineHeight: "2.063rem",
+  },
+};
+
 theme.typography.h4 = {
   fontFamily: FontFamilies.poppins,
   fontWeight: FontWeights.medium,

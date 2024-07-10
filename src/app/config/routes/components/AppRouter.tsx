@@ -6,6 +6,7 @@ import AddTripPage from "@pages/account/addTrips";
 import DashboardPage from "@pages/account/dashboard";
 import TripsPage from "@pages/account/trips";
 import HomePage from "@pages/home";
+import LandingPage from "@pages/landing-page";
 import LoginPage from "@pages/login";
 import NotFoundPage from "@pages/not-found";
 import SignUpPage from "@pages/sign-up";
@@ -17,6 +18,8 @@ function AppRouter() {
   return (
     <Routes>
       {/* Public Pages */}
+      <Route path={AppRoutes.landingPage} element={<LandingPage />} />
+
       <Route path={AppRoutes.home} element={<HomePage />} />
       <Route element={<AuthLayout />}>
         <Route path={AppRoutes.signUp} element={<SignUpPage />} />
