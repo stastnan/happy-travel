@@ -48,7 +48,12 @@ export default function FilesForm(props: Props) {
       component="form"
       onSubmit={handleSubmit(onSubmit)}
       noValidate
-      sx={{ width: "100%", flexDirection: "row", gap: 2, flexWrap: "wrap" }}
+      sx={{
+        width: "100%",
+        flexDirection: "row",
+        gap: { xs: 1, md: 2 },
+        flexWrap: "wrap",
+      }}
       gap={3}
     >
       <UploadFileButton

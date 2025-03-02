@@ -31,7 +31,7 @@ export default function DocumentCard({
         borderRadius: 4,
         border: 1,
         borderColor: "grey.200",
-        width: 200,
+        width: { xs: 170, md: 200 },
         height: "100%",
       }}
     >
@@ -85,7 +85,7 @@ export default function DocumentCard({
             justifyContent="center"
             sx={{
               width: "100%",
-              height: 133,
+              height: { xs: 148, md: 133 },
               bgcolor: "grey.100",
               borderRadius: 4,
             }}
