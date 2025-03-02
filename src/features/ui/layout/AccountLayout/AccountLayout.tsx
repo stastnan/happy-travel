@@ -65,9 +65,9 @@ const StyledDrawer = styled(Drawer, {
 const TOOLBAR_STYLES = { mt: 2, mb: 1 };
 
 export default function AccountLayout() {
-  const { xl } = useBreakpoints();
+  const { md, xl } = useBreakpoints();
+
   const [isOpen, setIsOpen] = useState(xl);
-  const { md } = useBreakpoints();
 
   const handleDrawerToggle = () => {
     setIsOpen(!isOpen);

@@ -33,6 +33,7 @@ interface Props {
 
 export default function AccountSidebar({ isMinimized, onClose }: Props) {
   const user = useAppSelector(selectUser);
+  const firstName = user?.displayName?.split(" ")[0];
   const userInitial = user?.displayName?.[0];
   const { md } = useBreakpoints();
 
@@ -65,7 +66,7 @@ export default function AccountSidebar({ isMinimized, onClose }: Props) {
           <Avatar sx={{ height: 48, width: 48, background: Colors.disabled }}>
             {userInitial}
           </Avatar>
-          {!isMinimized && <Typography variant="body1">Gabriela</Typography>}
+          {!isMinimized && <Typography variant="body1">{firstName}</Typography>}
         </Stack>
         <List>
           {ACCOUNT_LINKS.map(({ Icon, text, path }) => (
