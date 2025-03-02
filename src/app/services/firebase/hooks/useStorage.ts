@@ -1,12 +1,10 @@
 import { deleteObject, ref, uploadBytesResumable } from "firebase/storage";
 import { useEffect, useState } from "react";
 
-import { selectUser } from "@features/auth/store/authSlice";
 import { DocumentToUpload, TripFile } from "@features/trip/types";
 import useToast from "@hooks/useToast";
-import { useAppSelector } from "@store/index";
 
-import { storage } from "../firebase";
+import { auth, storage } from "../firebase";
 
 interface Props {
   onAllUploadSuccess: (uploadedFiles: TripFile[]) => void;
@@ -32,7 +30,7 @@ const defaultState: State = {
 };
 
 export function useStorage({ onAllUploadSuccess }: Props) {
-  const user = useAppSelector(selectUser);
+  // const user = useAppSelector(selectUser);
 
   const { showErrorMessage } = useToast();
 
@@ -94,9 +92,8 @@ export function useStorage({ onAllUploadSuccess }: Props) {
 
       const storageRef = ref(
         storage,
-        `user-data/${user?.uid}/${path}/${file.fileName}`,
+        `user-data/${auth?.currentUser?.uid}/${path}/${file.fileName}`,
       );
-
       const uploadTask = uploadBytesResumable(storageRef, file.file);
 
       uploadTask.on(
