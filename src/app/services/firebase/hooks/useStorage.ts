@@ -1,13 +1,16 @@
 import { deleteObject, ref, uploadBytesResumable } from "firebase/storage";
 import { useEffect, useState } from "react";
 
+import { selectUser } from "@features/auth/store/authSlice";
 import { DocumentToUpload, TripFile } from "@features/trip/types";
 import useToast from "@hooks/useToast";
+import { useAppSelector } from "@store/index";
 
-import { auth, storage } from "../firebase";
+import { storage } from "../firebase";
 
 interface Props {
   onAllUploadSuccess: (uploadedFiles: TripFile[]) => void;
+  onOneUploadSuccess: (index: number, uploadedFile: TripFile) => void;
 }
 interface State {
   uploadProgresses: (number | undefined)[];
@@ -29,8 +32,8 @@ const defaultState: State = {
   removingFilePath: null,
 };
 
-export function useStorage({ onAllUploadSuccess }: Props) {
-  // const user = useAppSelector(selectUser);
+export function useStorage({ onAllUploadSuccess, onOneUploadSuccess }: Props) {
+  const user = useAppSelector(selectUser);
 
   const { showErrorMessage } = useToast();
 
@@ -92,7 +95,7 @@ export function useStorage({ onAllUploadSuccess }: Props) {
 
       const storageRef = ref(
         storage,
-        `user-data/${auth?.currentUser?.uid}/${path}/${file.fileName}`,
+        `user-data/${user?.uid}/${path}/${file.fileName}`,
       );
       const uploadTask = uploadBytesResumable(storageRef, file.file);
 
@@ -132,6 +135,7 @@ export function useStorage({ onAllUploadSuccess }: Props) {
               fileName: file.fileName,
               storagePath: uploadTask.snapshot.ref.fullPath,
             };
+            onOneUploadSuccess(index, newUploadedFiles[index]);
 
             return {
               ...prevState,
