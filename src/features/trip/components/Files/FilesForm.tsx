@@ -16,6 +16,7 @@ import {
   ACCEPTED_DOCUMENT_FORMATS,
   ACCEPTED_PHOTO_FORMATS,
   MAX_FILES_SIZE_MB,
+  MAX_TRIP_PHOTOS,
 } from "../../constants";
 import type { DocumentToUpload, TripFile } from "../../types";
 import DocumentCard from "./DocumentCard";
@@ -219,6 +220,15 @@ function useFilesUploadForm(props: Props) {
       return;
     }
 
+    if (
+      props.type === "photo" &&
+      files.length >= MAX_TRIP_PHOTOS &&
+      !(!files[files.length - 1].fileName && files.length === MAX_TRIP_PHOTOS)
+    ) {
+      return showErrorMessage(
+        `You can upload maximum ${MAX_TRIP_PHOTOS} photos.`,
+      );
+    }
     if (files.length === 0 || files[files.length - 1]?.fileName) {
       append({ fileName: "" });
     }
@@ -235,7 +245,7 @@ function useFilesUploadForm(props: Props) {
       return;
     }
 
-    if (file.size * 1024 * 1024 * MAX_FILES_SIZE_MB) {
+    if (file.size > 1024 * 1024 * MAX_FILES_SIZE_MB) {
       return showErrorMessage(
         `File size is too big. Maximum size is ${MAX_FILES_SIZE_MB}MB.`,
       );
