@@ -22,6 +22,7 @@ interface Props {
   onClick?: () => void;
   typography?: TypographyProps["variant"];
   isLanding?: boolean;
+  disabled?: boolean;
 }
 
 export default function AppButton({
@@ -38,6 +39,7 @@ export default function AppButton({
   typography,
   onClick,
   isLanding,
+  disabled,
 }: Props) {
   return (
     <LoadingButton
@@ -50,6 +52,7 @@ export default function AppButton({
       endIcon={endIcon}
       startIcon={startIcon}
       onClick={onClick}
+      disabled={disabled}
       sx={{
         borderRadius: 2,
         height: {
