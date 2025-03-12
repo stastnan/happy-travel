@@ -76,6 +76,9 @@ export const tripWizardSlice = createSlice({
     setDocuments: (state, action: PayloadAction<Trip["documents"]>) => {
       state.trip.documents = action.payload;
     },
+    setPackingLists: (state, action: PayloadAction<Trip["packingLists"]>) => {
+      state.trip.packingLists = action.payload;
+    },
     setPhotos: (state, action: PayloadAction<Trip["photos"]>) => {
       state.trip.photos = action.payload;
     },
@@ -96,6 +99,7 @@ export const {
   setPlaces,
   setExpenses,
   setDocuments,
+  setPackingLists,
   setPhotos,
 } = tripWizardSlice.actions;
 
