@@ -23,6 +23,15 @@ interface Props {
   typography?: TypographyProps["variant"];
   isLanding?: boolean;
   disabled?: boolean;
+  isSmall?: boolean;
+  color?:
+    | "inherit"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning";
 }
 
 export default function AppButton({
@@ -40,6 +49,8 @@ export default function AppButton({
   onClick,
   isLanding,
   disabled,
+  isSmall,
+  color,
 }: Props) {
   return (
     <LoadingButton
@@ -53,11 +64,12 @@ export default function AppButton({
       startIcon={startIcon}
       onClick={onClick}
       disabled={disabled}
+      color={color}
       sx={{
         borderRadius: 2,
         height: {
-          xs: variant === "text" ? 42 : 48,
-          md: variant === "text" ? 48 : 56,
+          xs: variant === "text" || isSmall ? 42 : 48,
+          md: variant === "text" || isSmall ? 48 : 56,
         },
         width: fullWidth ? "100%" : "fit-content",
         textTransform: "none",
