@@ -26,7 +26,7 @@ interface FormInput {
 
 export default function TripInfoAndPlaces(props: Props) {
   const totalBudget = 360;
-  const { control, formValues } = useTravelInfoForm(props);
+  const { control, formValues } = useTripInfoForm(props);
 
   const onPlacesUpdate = (newPlaces: Trip["places"]) =>
     props.onUpdate({ places: newPlaces });
@@ -121,7 +121,7 @@ export default function TripInfoAndPlaces(props: Props) {
   );
 }
 
-function useTravelInfoForm({ trip, onUpdate }: Props) {
+function useTripInfoForm({ trip, onUpdate }: Props) {
   const { control, watch } = useForm<FormInput>({
     mode: "onChange",
     defaultValues: {

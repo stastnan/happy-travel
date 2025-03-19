@@ -10,8 +10,6 @@ import { Box, Tab, Tabs } from "@mui/material";
 import type { Trip } from "../../types";
 import TripInfoAndPlaces from "./TripInfoAndPlaces";
 
-// import TripInfoAndPlaces from "./TripInfoAndPlaces";
-
 interface Props {
   trip: Trip;
   onUpdate: (data: Partial<Trip>) => void;
