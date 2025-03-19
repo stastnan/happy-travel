@@ -1,7 +1,6 @@
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 import ImageSearchIcon from "@mui/icons-material/ImageSearch";
-
 import {
   Box,
   ButtonBase,
@@ -13,12 +12,12 @@ import {
 
 import { Colors } from "@config/styles";
 import PreviewImageDialog from "@features/trip/components/PreviewImageDialog";
-import { TRIP_PREVIEW_IMAGES } from "@features/trip/data";
 import type { Trip } from "@features/trip/types";
 import DateSelectInput from "@features/ui/form/DateSelectInput";
 import useDialog from "@hooks/useDialog";
 import { useAppDispatch, useAppSelector } from "@store/index";
 
+import { usePreviewImageSrc } from "../../../hooks/usePreviewImageHook";
 import {
   nextStep,
   selectWizardTrip,
@@ -34,7 +33,7 @@ interface FormInput {
   endDate: Trip["endDate"];
 }
 
-export default function TravelInfo() {
+export default function TripInfo() {
   const { isOpen, open, close } = useDialog();
   const {
     handleSubmit,
@@ -45,7 +44,7 @@ export default function TravelInfo() {
     errors,
     previewImageSrc,
     onPreviewImageSave,
-  } = useTravelInfoForm({ closePreviewImageDialog: close });
+  } = useTripInfoForm({ closePreviewImageDialog: close });
 
   return (
     <Stack
@@ -56,7 +55,6 @@ export default function TravelInfo() {
       gap={3}
     >
       <Stack direction={{ xs: "column", md: "row" }} gap={3}>
-
         <Stack>
           <ButtonBase
             onClick={open}
@@ -130,13 +128,13 @@ export default function TravelInfo() {
             )}
           />
           <Stack direction="row" gap={2}>
-
             <DateSelectInput
               control={control}
               name="startDate"
               label="Start date"
               requiredErrorText="Please specify your start date"
               maxDate={formValues.endDate}
+              fullWidth
             />
             <DateSelectInput
               name="endDate"
@@ -144,7 +142,7 @@ export default function TravelInfo() {
               requiredErrorText="Please specify your end date"
               label="End date"
               minDate={formValues.startDate}
-
+              fullWidth
             />
           </Stack>
         </Stack>
@@ -184,8 +182,7 @@ export default function TravelInfo() {
   );
 }
 
-
-function useTravelInfoForm({
+function useTripInfoForm({
   closePreviewImageDialog,
 }: {
   closePreviewImageDialog: () => void;
@@ -218,16 +215,11 @@ function useTravelInfoForm({
   };
 
   const formValues = watch();
-  const previewImageSrc = formValues.previewImage?.templateImageId
-    ? TRIP_PREVIEW_IMAGES.find(
-        (image) => image.id === formValues.previewImage?.templateImageId,
-      )?.src
-    : null;
+  const previewImageSrc = usePreviewImageSrc(formValues.previewImage);
 
   const onSubmit: SubmitHandler<FormInput> = (data) => {
     dispatch(nextStep());
     dispatch(setTravelInformation(data));
-
   };
 
   return {

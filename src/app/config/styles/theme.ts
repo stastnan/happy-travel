@@ -11,6 +11,9 @@ const theme = createTheme({
     primary: {
       main: "#729E65",
     },
+    error: {
+      main: "#EB5757",
+    },
     text: {
       primary: "#223644",
       secondary: "#64727C",
@@ -90,6 +93,30 @@ const theme = createTheme({
           "&.Mui-disabled": { FontWeight: FontWeights.regular },
           "&.Mui-active": { FontWeight: FontWeights.medium },
           "&.Mui-completed": { FontWeight: FontWeights.regular },
+        },
+      },
+    },
+    MuiBreadcrumbs: {
+      defaultProps: {
+        style: {
+          fontSize: "1rem",
+          lineHeight: "1.5rem",
+        },
+      },
+    },
+    MuiTabs: {
+      styleOverrides: {
+        root: {
+          "& button": {
+            minHeight: 65,
+          },
+        },
+      },
+    },
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          color: Colors.disabled,
         },
       },
     },

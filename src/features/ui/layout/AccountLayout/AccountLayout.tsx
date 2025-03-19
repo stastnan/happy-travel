@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -66,6 +66,8 @@ const StyledDrawer = styled(Drawer, {
 const TOOLBAR_STYLES = { mt: 2, mb: 1 };
 
 export default function AccountLayout() {
+  const location = useLocation();
+
   const { md, xl } = useBreakpoints();
 
   const [isOpen, setIsOpen] = useState(xl);
@@ -78,19 +80,17 @@ export default function AccountLayout() {
     setIsOpen(false);
   };
 
-  // This call is needed to cause re-render when you change
-  // the url, so error boundary from another page also re-renders
-  // and doesn't show old error from previous page
-  useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <Box
       sx={{
         display: "flex",
         bgcolor: "grey.100",
-        minHeight: { md: "100vh" },
-        height: { xs: "100vh", md: "auto" },
-        maxHeight: { xs: "-webkit-fill-available", md: "auto" },
+
+        minHeight: "100vh",
       }}
     >
       {/* Desktop drawer */}
@@ -107,7 +107,7 @@ export default function AccountLayout() {
               background: "white",
               zIndex: theme.zIndex.drawer + 1,
               borderRadius: 1,
-              position: "absolute",
+              position: "fixed",
               top: 27,
               left: `calc(${
                 isOpen ? DESKTOP_DRAWER_WIDTH : DESKTOP_MINIMIZED_DRAWER_WIDTH
@@ -175,8 +175,6 @@ export default function AccountLayout() {
           },
           pb: 4,
           bgcolor: "grey.100",
-          minHeight: "100vh",
-          height: "auto",
         }}
       >
         <Toolbar sx={{ display: { md: "none" }, ...TOOLBAR_STYLES }} />
