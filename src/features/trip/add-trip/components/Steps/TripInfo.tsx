@@ -1,4 +1,4 @@
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 
 import ImageSearchIcon from "@mui/icons-material/ImageSearch";
 import {
@@ -11,16 +11,17 @@ import {
 } from "@mui/material";
 
 import { Colors } from "@config/styles";
-import PreviewImageDialog from "@features/trip/components/PreviewImageDialog";
-import type { Trip } from "@features/trip/types";
 import DateSelectInput from "@features/ui/form/DateSelectInput";
 import useDialog from "@hooks/useDialog";
 import { useAppDispatch, useAppSelector } from "@store/index";
 
+import PreviewImageDialog from "../../../components/PreviewImageDialog";
 import { usePreviewImageSrc } from "../../../hooks/usePreviewImageHook";
+import type { Trip } from "../../../types";
 import {
   nextStep,
   selectWizardTrip,
+  setPreviewImage,
   setTravelInformation,
 } from "../../store/tripWizardSlice";
 import Pagination from "../Navigation/Pagination";
@@ -41,9 +42,10 @@ export default function TripInfo() {
     onSubmit,
     formValues,
     register,
+    onPreviewImageSave,
     errors,
     previewImageSrc,
-    onPreviewImageSave,
+    onPreviewImageChange,
   } = useTripInfoForm({ closePreviewImageDialog: close });
 
   return (
@@ -59,7 +61,7 @@ export default function TripInfo() {
           <ButtonBase
             onClick={open}
             sx={{
-              borderRadius: 4.25,
+              borderRadius: 4,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -79,6 +81,7 @@ export default function TripInfo() {
                   height: "100%",
                   borderRadius: 4,
                   objectFit: "cover",
+                  aspectRatio: "1/1",
                 }}
                 src={previewImageSrc}
                 alt="Trip preview"
@@ -117,9 +120,8 @@ export default function TripInfo() {
                 margin="normal"
                 required
                 fullWidth
-                id="trip"
+                id="name"
                 label="Trip Name"
-                autoComplete="trip"
                 autoFocus
                 helperText={fieldState.error?.message}
                 error={Boolean(fieldState.error)}
@@ -170,14 +172,16 @@ export default function TripInfo() {
           />
         )}
       />
-
+      <Pagination />
       <PreviewImageDialog
+        key={previewImageSrc}
         isOpen={isOpen}
         onClose={close}
         onSave={onPreviewImageSave}
+        defaultPreviewImage={formValues.previewImage}
+        defaultPreviewImageSrc={previewImageSrc}
+        onChange={onPreviewImageChange}
       />
-
-      <Pagination />
     </Stack>
   );
 }
@@ -187,9 +191,8 @@ function useTripInfoForm({
 }: {
   closePreviewImageDialog: () => void;
 }) {
-  const dispatch = useAppDispatch();
   const trip = useAppSelector(selectWizardTrip);
-
+  const dispatch = useAppDispatch();
   const {
     handleSubmit,
     control,
@@ -207,15 +210,20 @@ function useTripInfoForm({
       previewImage: trip.previewImage,
     },
   });
+  const formValues = watch();
+  const previewImageSrc = usePreviewImageSrc(formValues.previewImage);
 
   const onPreviewImageSave = (previewImage: Trip["previewImage"]) => {
     closePreviewImageDialog();
+    dispatch(setPreviewImage(previewImage));
     setValue("previewImage", previewImage);
     trigger("previewImage");
   };
 
-  const formValues = watch();
-  const previewImageSrc = usePreviewImageSrc(formValues.previewImage);
+  const onPreviewImageChange = (previewImage: Trip["previewImage"]) => {
+    dispatch(setPreviewImage(previewImage));
+    setValue("previewImage", previewImage);
+  };
 
   const onSubmit: SubmitHandler<FormInput> = (data) => {
     dispatch(nextStep());
@@ -231,5 +239,6 @@ function useTripInfoForm({
     errors,
     previewImageSrc,
     onPreviewImageSave,
+    onPreviewImageChange,
   };
 }

@@ -5,7 +5,7 @@ interface Props {
   isSmall?: boolean;
   children: JSX.Element;
   sx?: SxProps<Theme>;
-  onClick: () => void;
+  onClick: (event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   "aria-label": string;
   disabled?: boolean;
   variant?: "outlined" | "contained";

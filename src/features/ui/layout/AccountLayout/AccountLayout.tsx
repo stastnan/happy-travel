@@ -89,7 +89,6 @@ export default function AccountLayout() {
       sx={{
         display: "flex",
         bgcolor: "grey.100",
-
         minHeight: "100vh",
       }}
     >
