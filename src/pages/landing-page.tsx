@@ -15,7 +15,7 @@ interface Props {
   noPadding?: boolean;
 }
 
-const Section = ({ children, noPadding }: Props) => {
+function Section({ children, noPadding }: Props) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
 
@@ -31,7 +31,7 @@ const Section = ({ children, noPadding }: Props) => {
       {children}
     </Box>
   );
-};
+}
 
 export default function LandingPage() {
   const contentRef = useRef<HTMLDivElement>(null);
