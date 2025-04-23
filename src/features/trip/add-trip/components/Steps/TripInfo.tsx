@@ -46,6 +46,7 @@ export default function TripInfo() {
     errors,
     previewImageSrc,
     onPreviewImageChange,
+    tripId,
   } = useTripInfoForm({ closePreviewImageDialog: close });
 
   return (
@@ -175,6 +176,7 @@ export default function TripInfo() {
       <Pagination />
       <PreviewImageDialog
         key={previewImageSrc}
+        tripId={tripId}
         isOpen={isOpen}
         onClose={close}
         onSave={onPreviewImageSave}
@@ -240,5 +242,6 @@ function useTripInfoForm({
     previewImageSrc,
     onPreviewImageSave,
     onPreviewImageChange,
+    tripId: trip.id,
   };
 }
