@@ -23,24 +23,34 @@ import ExpenseCategoryIcon from "./ExpenseCategoryIcon";
 interface Props {
   expenses: Trip["expenses"];
   onDelete: (expenseId: string) => void;
+  autoScrollOnChange?: boolean;
 }
 
-export default function ExpensesTable({ expenses, onDelete }: Props) {
+export default function ExpensesTable({
+  expenses,
+  onDelete,
+  autoScrollOnChange,
+}: Props) {
   const bottomBoxRef = useRef<HTMLDivElement | null>(null);
   const { md } = useBreakpoints();
 
   useEffect(() => {
-    if (bottomBoxRef.current) {
+    if (bottomBoxRef.current && autoScrollOnChange) {
       bottomBoxRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [expenses]);
+  }, [expenses, autoScrollOnChange]);
 
   return (
     <TableContainer>
       <Table aria-label="Expenses table">
         <TableHead>
           <TableRow>
-            <TableCell sx={{ width: { xs: "45%", md: "25%" } }}>
+            <TableCell
+              sx={{
+                minWidth: { xs: 140, md: 162 },
+                width: { xs: "45%", md: "25%" },
+              }}
+            >
               <Typography component="span" variant="subtitle2">
                 Category
               </Typography>
@@ -120,10 +130,10 @@ export default function ExpensesTable({ expenses, onDelete }: Props) {
                 </TableCell>
               </TableRow>
             );
-            <Box ref={bottomBoxRef} />;
           })}
         </TableBody>
       </Table>
+      <Box ref={bottomBoxRef} />
     </TableContainer>
   );
 }
