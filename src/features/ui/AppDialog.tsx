@@ -21,12 +21,15 @@ interface Props {
   title: string;
   isOpen: boolean;
   onClose: () => void;
-  primaryButtonText: string;
-  onPrimaryButtonClick: () => void;
+  primaryButtonText?: string;
+  onPrimaryButtonClick?: () => void;
+  secondaryButtonText?: string;
+  onSecondaryButtonClick?: () => void;
   children: React.ReactNode;
   isForm?: boolean;
   maxWidth?: number;
   isLoading?: boolean;
+  disableSecondaryButton?: boolean;
 }
 
 export default function AppDialog({
@@ -34,11 +37,14 @@ export default function AppDialog({
   onClose,
   primaryButtonText,
   onPrimaryButtonClick,
+  secondaryButtonText,
+  onSecondaryButtonClick,
   children,
   title,
   isForm,
   maxWidth,
   isLoading,
+  disableSecondaryButton,
 }: Props) {
   const { md } = useBreakpoints();
 
@@ -100,14 +106,28 @@ export default function AppDialog({
             backgroundColor: "white",
           }}
         >
-          <AppButton
-            fullWidth
-            onClick={onPrimaryButtonClick}
-            type={isForm ? "submit" : "button"}
-            loading={isLoading}
-          >
-            {primaryButtonText}
-          </AppButton>
+          {primaryButtonText && (
+            <AppButton
+              fullWidth
+              onClick={onPrimaryButtonClick}
+              type={isForm ? "submit" : "button"}
+              loading={isLoading}
+            >
+              {primaryButtonText}
+            </AppButton>
+          )}
+          {secondaryButtonText && (
+            <AppButton
+              disabled={disableSecondaryButton}
+              variant="outlined"
+              fullWidth
+              onClick={onSecondaryButtonClick}
+              type={isForm ? "submit" : "button"}
+              loading={isLoading}
+            >
+              {secondaryButtonText}
+            </AppButton>
+          )}
         </DialogActions>
       </Box>
     </Dialog>
