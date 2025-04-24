@@ -16,7 +16,7 @@ export default function Documents({ trip, onUpdate }: Props) {
       <FilesForm
         tripId={trip.id}
         defaultFiles={trip.documents}
-        onFileStorageRemoval={onChange}
+        onChange={onChange}
         type="document"
         autoUpload
       />
