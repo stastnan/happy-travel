@@ -151,7 +151,6 @@ function useWatchChange(
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onUpdateDebounced = useCallback(
     debounce((data: Trip["places"]) => {
-      console.log("places updated");
       onChange?.(data);
     }, 500),
     [],

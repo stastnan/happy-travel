@@ -20,8 +20,9 @@ export function useAuthStateSubscription() {
       } else {
         dispatch(logout());
       }
-      return () => authStateListenerUnsubscribe();
     });
+
+    return () => authStateListenerUnsubscribe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

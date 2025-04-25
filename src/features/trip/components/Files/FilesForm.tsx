@@ -1,8 +1,10 @@
+import isEqual from "lodash.isequal";
 import { useEffect, useRef } from "react";
 import {
   Controller,
   type SubmitHandler,
   type UseFieldArrayUpdate,
+  type UseFormWatch,
   useFieldArray,
   useForm,
 } from "react-hook-form";
@@ -25,10 +27,14 @@ import UploadFileButton from "./UploadFileButton";
 
 interface Props {
   defaultFiles: TripFile[];
-  onSubmit: (files: TripFile[]) => void;
-  onChange: (files: TripFile[]) => void;
-  SubmitComponent: React.ReactNode;
+  onSubmit?: (files: TripFile[]) => void;
+  onFileStorageRemoval?: (updatedFiles: TripFile[]) => void;
+  autoUpload?: boolean;
+  // onChange is only called for files that were uploaded to the storage
+  onChange?: (updatedFiles: TripFile[]) => void;
+  SubmitComponent?: React.ReactNode;
   type: "document" | "photo";
+  tripId: string;
 }
 
 interface FormInput {
@@ -96,17 +102,16 @@ export default function FilesForm(props: Props) {
                     url={file.url}
                     onRemoveClick={() => onFileRemove(index)}
                     uploadProgress={uploadProgresses[index]}
-                    isRemoving={
-                      Boolean(file.storagePath) &&
-                      removingFilePath === file.storagePath
-                    }
+                    isRemoving={Boolean(
+                      file.storagePath && removingFilePath === file.storagePath,
+                    )}
                   />
                 )}
 
                 {isPhotosForm && (
                   <Box
                     sx={{
-                      width: { xs: 171, md: 250 },
+                      width: { xs: 171, md: 261 },
                       height: { xs: 171, md: 250 },
                     }}
                   >
@@ -114,17 +119,19 @@ export default function FilesForm(props: Props) {
                       src={file.url}
                       onRemoveClick={() => onFileRemove(index)}
                       uploadProgress={uploadProgresses[index]}
-                      isRemoving={
-                        Boolean(file.storagePath) &&
-                        removingFilePath === file.storagePath
-                      }
+                      isRemoving={Boolean(
+                        file.storagePath &&
+                          removingFilePath === file.storagePath,
+                      )}
                     />
                   </Box>
                 )}
               </>
             )}
 
-            <FormHelperText error>{uploadErrors[index]}</FormHelperText>
+            {uploadErrors[index] && (
+              <FormHelperText error>{uploadErrors[index]}</FormHelperText>
+            )}
 
             <Controller
               name={`files.${index}`}
@@ -150,6 +157,18 @@ export default function FilesForm(props: Props) {
 }
 
 function useFilesUploadForm(props: Props) {
+  const { showErrorMessage } = useToast();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { watch, handleSubmit, control } = useForm<FormInput>({
+    defaultValues: {
+      files: props.defaultFiles,
+    },
+  });
+  const files = watch("files");
+  const { append, remove, update } = useFieldArray({
+    control,
+    name: "files",
+  });
   const {
     uploadFiles,
     uploadProgresses,
@@ -159,27 +178,13 @@ function useFilesUploadForm(props: Props) {
     uploadErrors,
   } = useStorage({
     onAllUploadSuccess: (uploadedFiles) => {
-      props.onSubmit(uploadedFiles);
+      props.onSubmit?.(uploadedFiles);
     },
     onOneUploadSuccess: (index, uploadedFile) => {
       update(index, uploadedFile);
     },
   });
   const disableChange = isLoading || Boolean(removingFilePath);
-  const { showErrorMessage } = useToast();
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-  const { watch, handleSubmit, control } = useForm<FormInput>({
-    defaultValues: {
-      files: props.defaultFiles,
-    },
-  });
-  const files = watch("files");
-
-  const { append, remove, update } = useFieldArray({
-    control,
-    name: "files",
-  });
 
   const onSubmit: SubmitHandler<FormInput> = (data) => {
     if (disableChange) {
@@ -187,7 +192,7 @@ function useFilesUploadForm(props: Props) {
     }
 
     if (!data?.files || data.files.length === 0) {
-      props.onSubmit([]);
+      props.onSubmit?.([]);
       return;
     }
 
@@ -195,24 +200,8 @@ function useFilesUploadForm(props: Props) {
     if (!filteredFiles[filteredFiles.length - 1].fileName) {
       filteredFiles.pop();
     }
-    uploadFiles(`${props.type}s`, filteredFiles);
-  };
 
-  const onFileRemove = async (index: number) => {
-    if (disableChange) {
-      return;
-    }
-
-    const file = files[index];
-    if (file.storagePath) {
-      const wasFileRemoved = await removeFile(file.storagePath);
-      if (wasFileRemoved) {
-        remove(index);
-        props.onChange([...files.slice(0, index), ...files.slice(index + 1)]);
-      }
-    } else {
-      remove(index);
-    }
+    uploadFiles(`${props.type}s/${props.tripId}`, filteredFiles);
   };
 
   const onFileAdd = () => {
@@ -229,10 +218,31 @@ function useFilesUploadForm(props: Props) {
         `You can upload maximum ${MAX_TRIP_PHOTOS} photos.`,
       );
     }
+
     if (files.length === 0 || files[files.length - 1]?.fileName) {
       append({ fileName: "" });
     }
     setTimeout(() => fileInputRef.current?.click(), 0);
+  };
+
+  const onFileRemove = async (index: number) => {
+    if (disableChange) {
+      return;
+    }
+
+    const file = files[index];
+    if (file.storagePath) {
+      const wasFileRemoved = await removeFile(file.storagePath);
+      if (wasFileRemoved) {
+        remove(index);
+        props.onFileStorageRemoval?.([
+          ...files.slice(0, index),
+          ...files.slice(index + 1),
+        ]);
+      }
+    } else {
+      remove(index);
+    }
   };
 
   const onFileInputChange = (
@@ -261,14 +271,22 @@ function useFilesUploadForm(props: Props) {
       );
     }
 
-    onChange({
+    const newFile = {
       fileName: file?.name,
       file,
       url: URL.createObjectURL(file),
-    });
+    };
+    onChange(newFile);
+
+    if (props.autoUpload) {
+      const filesCopy = [...files];
+      filesCopy[filesCopy.length - 1] = newFile;
+      uploadFiles(`${props.type}s//${props.tripId}`, filesCopy);
+    }
   };
 
   useFilesUrlsUpdate(files, update);
+  useWatchChange(watch, files, props.onChange);
 
   return {
     onSubmit,
@@ -295,10 +313,45 @@ function useFilesUrlsUpdate(
         if (!file.url && file.storagePath) {
           const url = await getDownloadURL(file.storagePath);
           if (url) {
-            update(index, { ...files[index], url });
+            update(index, {
+              ...files[index],
+              url,
+            });
           }
         }
       }),
     [files, update],
   );
+}
+
+function useWatchChange(
+  watch: UseFormWatch<FormInput>,
+  files: TripFile[],
+  onChange?: (data: TripFile[]) => void,
+) {
+  const previousFiles = useRef<TripFile[]>(
+    files.map((file) => ({
+      storagePath: file!.storagePath!,
+      fileName: file!.fileName!,
+    })),
+  );
+
+  useEffect(() => {
+    const formUpdateSubscription = watch((newValues) => {
+      const parsedFiles =
+        newValues.files
+          ?.filter((file) => Boolean(file?.storagePath))
+          .map((file) => ({
+            storagePath: file!.storagePath!,
+            fileName: file!.fileName!,
+          })) ?? [];
+
+      if (!isEqual(parsedFiles, previousFiles.current)) {
+        previousFiles.current = parsedFiles;
+        onChange?.(parsedFiles);
+      }
+    });
+
+    return () => formUpdateSubscription.unsubscribe();
+  }, [watch, onChange]);
 }
