@@ -109,6 +109,8 @@ const theme = createTheme({
         root: {
           "& button": {
             minHeight: 65,
+            fontSize: "1.125rem",
+            lineHeight: "1.688rem",
           },
         },
       },

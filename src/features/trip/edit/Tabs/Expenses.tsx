@@ -7,6 +7,7 @@ import ExpenseCategoryIcon from "@features/trip/components/Expenses/ExpenseCateg
 import ExpensesTable from "@features/trip/components/Expenses/ExpensesTable";
 import { EXPENSE_ICON_BY_CATEGORY } from "@features/trip/data";
 import AppButton from "@features/ui/AppButton";
+import { useBreakpoints } from "@hooks/useBreakpoints";
 import useDialog from "@hooks/useDialog";
 
 import ExpenseDialog from "../../components/Expenses/ExpenseDialog";
@@ -24,6 +25,7 @@ interface Props {
 
 export default function Expenses({ trip, onUpdate }: Props) {
   const { open, close, isOpen } = useDialog();
+  const { md } = useBreakpoints();
 
   const groupedExpenses = useMemo(
     () => getGroupedExpenses(trip.expenses),
@@ -87,7 +89,12 @@ export default function Expenses({ trip, onUpdate }: Props) {
       <ContentCard
         title="All Expenses"
         titleElement={
-          <AppButton variant="outlined" onClick={open} endIcon={<AddIcon />}>
+          <AppButton
+            variant="outlined"
+            onClick={open}
+            endIcon={<AddIcon />}
+            fullWidth={!md}
+          >
             Add Expense
           </AppButton>
         }
