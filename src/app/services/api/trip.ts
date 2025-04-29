@@ -52,9 +52,9 @@ export async function getTrips() {
           return null;
         }
       })
-      .filter(Boolean) as Trip[];
+      .filter(Boolean);
 
-    return tripsWithPreviewImages;
+    return tripsWithPreviewImages as Trip[];
   });
 }
 
