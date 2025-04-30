@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Controller, type SubmitHandler, useForm } from "react-hook-form";
 
 import ImageSearchIcon from "@mui/icons-material/ImageSearch";
@@ -140,6 +141,15 @@ export default function TripInfo() {
               label="Start date"
               requiredErrorText="Please specify your start date"
               maxDate={formValues.endDate}
+              validate={{
+                startDate: (startDate) =>
+                  !startDate ||
+                  (startDate &&
+                    formValues.endDate &&
+                    startDate < formValues.endDate)
+                    ? true
+                    : "Start date should be before the End date",
+              }}
               fullWidth
             />
             <DateSelectInput
@@ -149,6 +159,15 @@ export default function TripInfo() {
               label="End date"
               minDate={formValues.startDate}
               fullWidth
+              validate={{
+                endDate: (endDate) =>
+                  !endDate ||
+                  (endDate &&
+                    formValues.startDate &&
+                    endDate > formValues.startDate)
+                    ? true
+                    : "End date should be after the Start date",
+              }}
             />
           </Stack>
         </Stack>
@@ -234,6 +253,13 @@ function useTripInfoForm({
     dispatch(nextStep());
     dispatch(setTravelInformation(data));
   };
+
+  useEffect(() => {
+    if (formValues.startDate && formValues.endDate) {
+      trigger("startDate");
+      trigger("endDate");
+    }
+  }, [formValues.startDate, formValues.endDate, trigger]);
 
   return {
     handleSubmit,

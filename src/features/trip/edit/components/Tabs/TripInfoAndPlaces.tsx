@@ -9,7 +9,8 @@ import { Colors } from "@config/styles";
 import PlacesForm from "@features/trip/components/PlacesForm";
 import DateSelectInput from "@features/ui/form/DateSelectInput";
 
-import type { Expense, Trip } from "../../../types";
+import type { Trip } from "../../../types";
+import { getTripTotalBudget } from "../../../utils/getTripTotalBudget";
 import ContentCard from "./ContentCard";
 
 interface Props {
@@ -67,6 +68,15 @@ export default function TripInfoAndPlaces(props: Props) {
                     svg: { color: Colors.secondaryBlue },
                     maxWidth: { md: 150 },
                   }}
+                  validate={{
+                    startDate: (startDate) =>
+                      !startDate ||
+                      (startDate &&
+                        formValues.endDate &&
+                        startDate < formValues.endDate)
+                        ? true
+                        : "Start date should be before the End date",
+                  }}
                 />
                 <DateSelectInput
                   label="End date"
@@ -77,6 +87,15 @@ export default function TripInfoAndPlaces(props: Props) {
                   sx={{
                     svg: { color: Colors.secondaryBlue },
                     maxWidth: { md: 150 },
+                  }}
+                  validate={{
+                    endDate: (endDate) =>
+                      !endDate ||
+                      (endDate &&
+                        formValues.startDate &&
+                        endDate > formValues.startDate)
+                        ? true
+                        : "End date should be after the Start date",
                   }}
                 />
                 <Stack gap={0.5} sx={{ display: { xs: "none", md: "flex" } }}>
@@ -164,15 +183,16 @@ function useWatchChange(
 
   useEffect(() => {
     const formUpdateSubscription = watch((newValues) => {
-      if (newValues.name && newValues.startDate && newValues.endDate) {
+      if (
+        newValues.name &&
+        newValues.startDate &&
+        newValues.endDate &&
+        newValues.startDate < newValues.endDate
+      ) {
         onUpdateDebounced(newValues);
       }
     });
 
     return () => formUpdateSubscription.unsubscribe();
   }, [onUpdateDebounced, watch]);
-}
-
-function getTripTotalBudget(expenses: Expense[]) {
-  return expenses.reduce((total, expense) => total + expense.amount, 0);
 }
