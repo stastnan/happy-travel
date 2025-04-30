@@ -12,11 +12,12 @@ import {
 
 import { Colors } from "@config/styles";
 import DateSelectInput from "@features/ui/form/DateSelectInput";
+import { useBreakpoints } from "@hooks/useBreakpoints";
 import useDialog from "@hooks/useDialog";
 import { useAppDispatch, useAppSelector } from "@store/index";
 
 import PreviewImageDialog from "../../../components/PreviewImageDialog";
-import { usePreviewImageSrc } from "../../../hooks/usePreviewImageHook";
+import { usePreviewImageSrc } from "../../../hooks/usePreviewImageSrc";
 import type { Trip } from "../../../types";
 import {
   nextStep,
@@ -48,6 +49,8 @@ export default function TripInfo() {
     onPreviewImageChange,
     tripId,
   } = useTripInfoForm({ closePreviewImageDialog: close });
+
+  const { md } = useBreakpoints();
 
   return (
     <Stack
@@ -123,7 +126,7 @@ export default function TripInfo() {
                 fullWidth
                 id="name"
                 label="Trip Name"
-                autoFocus
+                autoFocus={md}
                 helperText={fieldState.error?.message}
                 error={Boolean(fieldState.error)}
                 {...field}

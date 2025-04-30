@@ -109,6 +109,7 @@ export default function AppDialog({
             position: { xs: "fixed", md: "static" },
             bottom: 0,
             width: "100%",
+            maxWidth: maxWidth ?? "inherit",
             backgroundColor: "white",
           }}
         >
