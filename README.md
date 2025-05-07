@@ -14,9 +14,9 @@ ZaTravel offers a comprehensive solution for travel enthusiasts by combining pow
 - Document Storage: Upload and securely store travel documents such as IDs, tickets, and travel itineraries.
 - Photo Storage: Keep all your travel memories in one place by uploading your photos directly to the app.
 
-- **[Visit Happy Music Player](https://za-travel.web.app/login)**
-  - log in with e-mail: visitor@example.com and password: ILoveTrips!
-- **[Watch project's video presentation](https://www.loom.com/share/5ebb3db4e2724cbf947c154d51952a14?sid=7edb2ff8-fb69-46da-9481-83b9298306fe)**
+- **[Visit Happy Travel](https://go-travel-6910a.web.app)**
+  - log in with e-mail: nik.stastna@gmail.com and password: qwertz
+  <!-- - **[Watch project's video presentation]()** -->
 
 ## Repository Structure
 
@@ -36,14 +36,19 @@ Tech Stack
 
 ### State Management
 
-- **Redux and Redux Toolkit**: Simplifies state management and ensures predictability across the application.
+- **Client state: Redux and Redux Toolkit**: Simplifies state management and ensures predictability across the application.
+- **Server state: Database and storage Firebase Firestore**: Manages remote data and file storage with real-time synchronization and persistence.
 
 ### Utility Libraries
 
-- **React Hook Form**: Simplifies form management and validation.
-- **Firebase**: Powers the backend for secure authentication and data storage.
+- **React Hook Forms**: Simplifies form management and validation.
 - **React Router DOM**: Provides efficient navigation without page reloads.
-- **Day.js**: Handles date and time formatting.
+- **Lodash.debounce & Lodash.isequal**: Adds utility functions for performance and deep comparisons.
+- **Notistack**: Displays stackable, customizable toast notifications.
+
+### Tests
+
+- **Cypress**: End-to-end testing framework used to validate user flows and ensure application reliability through real browser interaction.
 
 ### Development Tools
 
